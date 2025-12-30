@@ -379,4 +379,8 @@ C:/Projets/mainwindow.h
  mdp:C:/Qt/Tools/mingw1310_64/x86_64-w64-mingw32/include/wchar.h
 C:/Projets/main.cpp
 C:/Projets/mainwindow.cpp
- uic:./ui_mainwindow.h
+ uic:ui_mainwindow.h
+C:/Projets/playlist.h
+C:/Projets/titre.h
+C:/Projets/playlist.cpp
+C:/Projets/titre.cpp
