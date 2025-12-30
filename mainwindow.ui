@@ -11,19 +11,76 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Gestion de Playlist</string>
   </property>
-  <widget class="QWidget" name="centralwidget"/>
-  <widget class="QMenuBar" name="menubar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>800</width>
-     <height>26</height>
-    </rect>
-   </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QLineEdit" name="titleInput">
+      <property name="placeholderText">
+       <string>Titre de la chanson</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLineEdit" name="artistInput">
+      <property name="placeholderText">
+       <string>Nom de l'artiste</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QListWidget" name="listWidget"/>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QPushButton" name="addButton">
+        <property name="text">
+         <string>Ajouter</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="removeButton">
+        <property name="text">
+         <string>Supprimer</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="shuffleButton">
+        <property name="text">
+         <string>Lecture aléatoire</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="repeatButton">
+        <property name="text">
+         <string>Répétition</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="searchButton">
+        <property name="text">
+         <string>Rechercher</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="moveButton">
+        <property name="text">
+         <string>Réorganiser</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+   </layout>
   </widget>
+  <widget class="QMenuBar" name="menubar"/>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <resources/>

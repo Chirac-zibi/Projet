@@ -315,14 +315,14 @@
 	"DEP_FILE_RULE_NAME" : "Projets_autogen/timestamp",
 	"HEADERS" : 
 	[
+		[ "C:/Projets/Song.h", "MU", "EWIEGA46WW/moc_Song.cpp", null ],
 		[
 			"C:/Projets/mainwindow.h",
 			"MU",
 			"EWIEGA46WW/moc_mainwindow.cpp",
 			null
 		],
-		[ "C:/Projets/playlist.h", "MU", "EWIEGA46WW/moc_playlist.cpp", null ],
-		[ "C:/Projets/titre.h", "MU", "EWIEGA46WW/moc_titre.cpp", null ]
+		[ "C:/Projets/playlist.h", "MU", "EWIEGA46WW/moc_playlist.cpp", null ]
 	],
 	"HEADER_EXTENSIONS" : [ "h", "hh", "h++", "hm", "hpp", "hxx", "in", "txx" ],
 	"INCLUDE_DIR" : "C:/Projets/build/Desktop_Qt_6_10_1_MinGW_64_bit-Debug/Projets_autogen/include",
@@ -395,10 +395,10 @@
 	"SETTINGS_FILE" : "C:/Projets/build/Desktop_Qt_6_10_1_MinGW_64_bit-Debug/CMakeFiles/Projets_autogen.dir/AutogenUsed.txt",
 	"SOURCES" : 
 	[
+		[ "C:/Projets/Song.cpp", "MU", null ],
 		[ "C:/Projets/main.cpp", "MU", null ],
 		[ "C:/Projets/mainwindow.cpp", "MU", null ],
-		[ "C:/Projets/playlist.cpp", "MU", null ],
-		[ "C:/Projets/titre.cpp", "MU", null ]
+		[ "C:/Projets/playlist.cpp", "MU", null ]
 	],
 	"UIC_OPTIONS" : [],
 	"UIC_SEARCH_PATHS" : [],

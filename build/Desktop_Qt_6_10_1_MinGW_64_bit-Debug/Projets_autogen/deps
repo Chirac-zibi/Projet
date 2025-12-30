@@ -1,5 +1,7 @@
 Projets_autogen/timestamp: \
 	C:/Projets/CMakeLists.txt \
+	C:/Projets/Song.cpp \
+	C:/Projets/Song.h \
 	C:/Projets/build/Desktop_Qt_6_10_1_MinGW_64_bit-Debug/.qtc/package-manager/auto-setup.cmake \
 	C:/Projets/build/Desktop_Qt_6_10_1_MinGW_64_bit-Debug/.qtc/package-manager/maintenance_tool_provider.cmake \
 	C:/Projets/build/Desktop_Qt_6_10_1_MinGW_64_bit-Debug/CMakeFiles/3.30.5/CMakeCXXCompiler.cmake \
@@ -11,8 +13,8 @@ Projets_autogen/timestamp: \
 	C:/Projets/mainwindow.h \
 	C:/Projets/playlist.cpp \
 	C:/Projets/playlist.h \
-	C:/Projets/titre.cpp \
-	C:/Projets/titre.h \
+	C:/Qt/6.10.1/mingw_64/include/QtCore/QString \
+	C:/Qt/6.10.1/mingw_64/include/QtCore/QVector \
 	C:/Qt/6.10.1/mingw_64/include/QtCore/q17memory.h \
 	C:/Qt/6.10.1/mingw_64/include/QtCore/q20functional.h \
 	C:/Qt/6.10.1/mingw_64/include/QtCore/q20iterator.h \
@@ -137,6 +139,7 @@ Projets_autogen/timestamp: \
 	C:/Qt/6.10.1/mingw_64/include/QtCore/qutf8stringview.h \
 	C:/Qt/6.10.1/mingw_64/include/QtCore/qvariant.h \
 	C:/Qt/6.10.1/mingw_64/include/QtCore/qvarlengtharray.h \
+	C:/Qt/6.10.1/mingw_64/include/QtCore/qvector.h \
 	C:/Qt/6.10.1/mingw_64/include/QtCore/qversiontagging.h \
 	C:/Qt/6.10.1/mingw_64/include/QtCore/qxptype_traits.h \
 	C:/Qt/6.10.1/mingw_64/include/QtCore/qyieldcpu.h \
