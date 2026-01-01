@@ -1,13 +1,19 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "playlist.h"
+
 #include <QMessageBox>
 #include <QInputDialog>
+#include <QFontDatabase>
+#include <QPixmap>
+#include <QPalette>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    applyCustomStyle();
     refreshPlaylistDisplay();
 }
 
@@ -75,4 +81,42 @@ void MainWindow::on_moveButton_clicked() {
         playlist.moveSong(from - 1, to - 1);
         refreshPlaylistDisplay();
     }
+}
+
+void MainWindow::applyCustomStyle() {
+    // Charger une police personnalisée (optionnel)
+    QFontDatabase::addApplicationFont(":/fonts/OpenSans-Regular.ttf");
+    customFont = QFont("Open Sans", 10);
+    this->setFont(customFont);
+
+    // Appliquer un fond d’écran
+    QPixmap bkgnd(":/images/background.jpg");
+    bkgnd = bkgnd.scaled(this->size(), Qt::IgnoreAspectRatio);
+    QPalette palette;
+    palette.setBrush(QPalette::Window, bkgnd);
+    this->setPalette(palette);
+
+    // Styliser les champs de texte
+    QString lineEditStyle = "QLineEdit { background-color: #ffffff; border: 1px solid #ccc; border-radius: 4px; padding: 6px; font-size: 14px; }";
+    ui->titleInput->setStyleSheet(lineEditStyle);
+    ui->artistInput->setStyleSheet(lineEditStyle);
+
+    // Styliser la liste
+    ui->listWidget->setStyleSheet("QListWidget { background-color: rgba(255, 255, 255, 0.85); border: 1px solid #aaa; font-size: 14px; }");
+
+    // Style général des boutons
+    QString baseButtonStyle = "QPushButton { background-color: #4CAF50; color: white; border-radius: 6px; padding: 6px; font-weight: bold; }"
+                              "QPushButton:hover { background-color: #45a049; }";
+    ui->addButton->setStyleSheet(baseButtonStyle);
+    ui->removeButton->setStyleSheet("QPushButton { background-color: #f44336; color: white; border-radius: 6px; padding: 6px; font-weight: bold; }"
+                                    "QPushButton:hover { background-color: #d32f2f; }");
+    ui->shuffleButton->setStyleSheet("QPushButton { background-color: #2196F3; color: white; border-radius: 6px; padding: 6px; font-weight: bold; }"
+                                     "QPushButton:hover { background-color: #1976D2; }");
+    ui->searchButton->setStyleSheet("QPushButton { background-color: #9C27B0; color: white; border-radius: 6px; padding: 6px; font-weight: bold; }"
+                                    "QPushButton:hover { background-color: #7B1FA2; }");
+    ui->moveButton->setStyleSheet("QPushButton { background-color: #FF9800; color: white; border-radius: 6px; padding: 6px; font-weight: bold; }"
+                                  "QPushButton:hover { background-color: #FB8C00; }");
+
+    // Case à cocher
+    ui->repeatButton->setStyleSheet("QCheckBox { color: white; font-weight: bold; font-size: 14px; }");
 }

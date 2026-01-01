@@ -2,6 +2,8 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QFont>
+#include <QFontDatabase>
 #include "playlist.h"
 
 QT_BEGIN_NAMESPACE
@@ -12,7 +14,7 @@ class MainWindow : public QMainWindow {
     Q_OBJECT
 
 public:
-    MainWindow(QWidget *parent = nullptr);
+    explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
 private slots:
@@ -27,6 +29,8 @@ private:
     Ui::MainWindow *ui;
     Playlist playlist;
 
+    QFont customFont;
+    void applyCustomStyle();
     void refreshPlaylistDisplay();
 };
 
