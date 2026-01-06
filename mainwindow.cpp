@@ -1,7 +1,5 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "playlist.h"
-
 #include <QMessageBox>
 #include <QInputDialog>
 #include <QFontDatabase>
@@ -11,10 +9,15 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
+    , playTimer(new QTimer(this))
+    , isPlaying(false)
+    , currentIndex(0)
 {
     ui->setupUi(this);
     applyCustomStyle();
     refreshPlaylistDisplay();
+
+    connect(playTimer, &QTimer::timeout, this, &MainWindow::playNextSong);
 }
 
 MainWindow::~MainWindow() {
@@ -52,6 +55,7 @@ void MainWindow::on_removeButton_clicked() {
 void MainWindow::on_shuffleButton_clicked() {
     playlist.shuffle();
     refreshPlaylistDisplay();
+    currentIndex = 0;
 }
 
 void MainWindow::on_repeatButton_toggled(bool checked) {
@@ -83,28 +87,56 @@ void MainWindow::on_moveButton_clicked() {
     }
 }
 
+void MainWindow::on_playButton_clicked() {
+    if (!isPlaying && ui->listWidget->count() > 0) {
+        isPlaying = true;
+        currentIndex = 0;
+        ui->statusLabel->setText("Lecture aléatoire en cours...");
+        playTimer->start(1500);
+    }
+}
+
+void MainWindow::on_stopButton_clicked() {
+    isPlaying = false;
+    playTimer->stop();
+    ui->statusLabel->setText("Lecture arrêtée.");
+    ui->listWidget->clearSelection();
+}
+
+void MainWindow::playNextSong() {
+    int total = ui->listWidget->count();
+    if (total == 0) return;
+
+    ui->listWidget->clearSelection();
+    ui->listWidget->setCurrentRow(currentIndex);
+    ui->listWidget->item(currentIndex)->setSelected(true);
+
+    QString currentText = ui->listWidget->item(currentIndex)->text();
+    ui->statusLabel->setText("Lecture : " + currentText);
+
+    currentIndex = (currentIndex + 1) % total;
+}
+
 void MainWindow::applyCustomStyle() {
-    // Charger une police personnalisée (optionnel)
     QFontDatabase::addApplicationFont(":/fonts/OpenSans-Regular.ttf");
     customFont = QFont("Open Sans", 10);
     this->setFont(customFont);
 
-    // Appliquer un fond d’écran
     QPixmap bkgnd(":/images/background.jpg");
     bkgnd = bkgnd.scaled(this->size(), Qt::IgnoreAspectRatio);
     QPalette palette;
     palette.setBrush(QPalette::Window, bkgnd);
     this->setPalette(palette);
 
-    // Styliser les champs de texte
     QString lineEditStyle = "QLineEdit { background-color: #ffffff; border: 1px solid #ccc; border-radius: 4px; padding: 6px; font-size: 14px; }";
     ui->titleInput->setStyleSheet(lineEditStyle);
     ui->artistInput->setStyleSheet(lineEditStyle);
 
-    // Styliser la liste
-    ui->listWidget->setStyleSheet("QListWidget { background-color: rgba(255, 255, 255, 0.85); border: 1px solid #aaa; font-size: 14px; }");
+    ui->listWidget->setStyleSheet(
+        "QListWidget::item:selected { background-color: #00BCD4; color: white; font-weight: bold; }"
+        "QListWidget { background-color: rgba(255, 255, 255, 0.85); border: 1px solid #aaa; font-size: 14px; }"
+        );
 
-    // Style général des boutons
     QString baseButtonStyle = "QPushButton { background-color: #4CAF50; color: white; border-radius: 6px; padding: 6px; font-weight: bold; }"
                               "QPushButton:hover { background-color: #45a049; }";
     ui->addButton->setStyleSheet(baseButtonStyle);
@@ -116,7 +148,9 @@ void MainWindow::applyCustomStyle() {
                                     "QPushButton:hover { background-color: #7B1FA2; }");
     ui->moveButton->setStyleSheet("QPushButton { background-color: #FF9800; color: white; border-radius: 6px; padding: 6px; font-weight: bold; }"
                                   "QPushButton:hover { background-color: #FB8C00; }");
-
-    // Case à cocher
     ui->repeatButton->setStyleSheet("QCheckBox { color: white; font-weight: bold; font-size: 14px; }");
+    ui->playButton->setStyleSheet("QPushButton { background-color: #00BCD4; color: white; border-radius: 6px; padding: 6px; font-weight: bold; }"
+                                  "QPushButton:hover { background-color: #0097A7; }");
+    ui->stopButton->setStyleSheet("QPushButton { background-color: #607D8B; color: white; border-radius: 6px; padding: 6px; font-weight: bold; }"
+                                  "QPushButton:hover { background-color: #455A64; }");
 }

@@ -99,50 +99,66 @@ void Playlist::moveSong(int fromIndex, int toIndex) {
         to->prev = from;
         if (to == head) head = from;
     }
+
+    if (isCircular && head && tail) {
+        tail->next = head;
+        head->prev = tail;
+    }
 }
 
 Song* Playlist::search(QString title) {
     Song* temp = head;
-    while (temp) {
+    int count = 0;
+    while (temp && count < countSongs()) {
         if (temp->title.compare(title, Qt::CaseInsensitive) == 0) {
             return temp;
         }
         temp = temp->next;
-        if (isCircular && temp == head) break;
+        count++;
     }
     return nullptr;
 }
 
-QVector<Song*> Playlist::getAllSongs() {
-    QVector<Song*> list;
+QVector<Song*> Playlist::getAllSongs() const {
+    QVector<Song*> songs;
     Song* temp = head;
-    while (temp) {
-        list.append(temp);
+    int count = 0;
+    while (temp && count < countSongs()) {
+        songs.append(temp);
         temp = temp->next;
-        if (isCircular && temp == head) break;
+        count++;
     }
-    return list;
+    return songs;
 }
 
 int Playlist::countSongs() const {
     int count = 0;
     Song* temp = head;
-    while (temp) {
-        ++count;
+    if (!temp) return 0;
+
+    do {
+        count++;
         temp = temp->next;
-        if (isCircular && temp == head) break;
-    }
+    } while (temp && temp != head);
+
     return count;
 }
 
-Song* Playlist::getSongAt(int index) {
+Song* Playlist::getSongAt(int index) const {
     int i = 0;
     Song* temp = head;
-    while (temp) {
-        if (i == index) return temp;
+    while (temp && i < index) {
         temp = temp->next;
-        ++i;
-        if (isCircular && temp == head) break;
+        i++;
     }
-    return nullptr;
+    return temp;
+}
+
+Song* Playlist::getCurrent() const {
+    return current;
+}
+
+void Playlist::next() {
+    if (!current) return;
+    current = current->next ? current->next : (isCircular ? head : nullptr);
 }

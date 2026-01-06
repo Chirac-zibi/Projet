@@ -1,33 +1,35 @@
 #ifndef PLAYLIST_H
 #define PLAYLIST_H
 
-#include "song.h"
 #include <QString>
 #include <QVector>
+#include "song.h"
 
 class Playlist {
-private:
-    Song* head;
-    Song* tail;
-    Song* current;
-    bool isCircular;
-
 public:
     Playlist();
     ~Playlist();
 
     void addSong(QString title, QString artist);
     void removeCurrentSong();
-    void shuffle();
     void repeatMode(bool enable);
+    void shuffle();
     void moveSong(int fromIndex, int toIndex);
     Song* search(QString title);
-    QVector<Song*> getAllSongs();
+    QVector<Song*> getAllSongs() const;
+    int countSongs() const;
+
+    Song* getCurrent() const;  // Accès à la chanson en cours
+    void next();               // Avancer à la chanson suivante
 
 private:
-    int countSongs() const;
-    Song* getSongAt(int index);
+    Song* head;
+    Song* tail;
+    Song* current;
+    bool isCircular;
+
     void clear();
+    Song* getSongAt(int index) const;
 };
 
 #endif // PLAYLIST_H

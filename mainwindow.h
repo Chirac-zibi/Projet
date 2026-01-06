@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QFont>
 #include <QFontDatabase>
+#include <QTimer>
 #include "playlist.h"
 
 QT_BEGIN_NAMESPACE
@@ -24,12 +25,18 @@ private slots:
     void on_repeatButton_toggled(bool checked);
     void on_searchButton_clicked();
     void on_moveButton_clicked();
+    void on_playButton_clicked();
+    void on_stopButton_clicked();
+    void playNextSong();
 
 private:
     Ui::MainWindow *ui;
     Playlist playlist;
-
     QFont customFont;
+    QTimer *playTimer;
+    bool isPlaying;
+    int currentIndex;
+
     void applyCustomStyle();
     void refreshPlaylistDisplay();
 };
