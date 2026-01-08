@@ -1,164 +1,96 @@
 #include "playlist.h"
-#include <QRandomGenerator>
+#include <algorithm> // pour std::random_shuffle
 
-Playlist::Playlist() : head(nullptr), tail(nullptr), current(nullptr), isCircular(false) {}
+Playlist::Playlist()
+    : currentIndex(0), repeat(false), isShuffle(false) {}
 
-Playlist::~Playlist() {
-    clear();
-}
-
-void Playlist::clear() {
-    Song* temp = head;
-    while (temp) {
-        Song* next = temp->next;
-        delete temp;
-        if (isCircular && next == head) break;
-        temp = next;
-    }
-    head = tail = current = nullptr;
-}
-
-void Playlist::addSong(QString title, QString artist) {
-    Song* newSong = new Song(title, artist);
-    if (!head) {
-        head = tail = current = newSong;
-    } else {
-        tail->next = newSong;
-        newSong->prev = tail;
-        tail = newSong;
-        if (isCircular) {
-            tail->next = head;
-            head->prev = tail;
-        }
-    }
+void Playlist::addSong(const QString &title, const QString &artist) {
+    Song* song = new Song{title, artist};
+    songs.append(song);
 }
 
 void Playlist::removeCurrentSong() {
-    if (!current) return;
+    if (songs.isEmpty()) return;
 
-    Song* toDelete = current;
+    int index = isShuffle ? shuffledOrder[currentIndex] : currentIndex;
+    delete songs[index];
+    songs.removeAt(index);
 
-    if (toDelete == head) head = head->next;
-    if (toDelete == tail) tail = tail->prev;
-
-    if (toDelete->prev) toDelete->prev->next = toDelete->next;
-    if (toDelete->next) toDelete->next->prev = toDelete->prev;
-
-    current = toDelete->next ? toDelete->next : head;
-    delete toDelete;
-}
-
-void Playlist::repeatMode(bool enable) {
-    isCircular = enable;
-    if (enable && head && tail) {
-        tail->next = head;
-        head->prev = tail;
-    } else if (tail) {
-        tail->next = nullptr;
-        if (head) head->prev = nullptr;
+    if (isShuffle) {
+        shuffledOrder.removeAt(currentIndex);
+        if (currentIndex >= shuffledOrder.size()) currentIndex = 0;
+    } else {
+        if (currentIndex >= songs.size()) currentIndex = 0;
     }
 }
 
 void Playlist::shuffle() {
-    int n = countSongs();
-    if (n < 2) return;
-
-    QVector<Song*> songs = getAllSongs();
-    for (int i = 0; i < n; ++i) {
-        int j = QRandomGenerator::global()->bounded(n);
-        std::swap(songs[i]->title, songs[j]->title);
-        std::swap(songs[i]->artist, songs[j]->artist);
+    isShuffle = true;
+    shuffledOrder.clear();
+    for (int i = 0; i < songs.size(); ++i) {
+        shuffledOrder.append(i);
     }
+    std::random_shuffle(shuffledOrder.begin(), shuffledOrder.end());
+    currentIndex = 0;
 }
 
-void Playlist::moveSong(int fromIndex, int toIndex) {
-    if (fromIndex == toIndex || fromIndex < 0 || toIndex < 0) return;
-
-    Song* from = getSongAt(fromIndex);
-    if (!from) return;
-
-    // Unlink
-    if (from->prev) from->prev->next = from->next;
-    if (from->next) from->next->prev = from->prev;
-    if (from == head) head = from->next;
-    if (from == tail) tail = from->prev;
-
-    // Relink
-    Song* to = getSongAt(toIndex);
-    if (!to) {
-        // Append at end
-        from->next = nullptr;
-        from->prev = tail;
-        if (tail) tail->next = from;
-        tail = from;
-        if (!head) head = from;
-    } else {
-        from->next = to;
-        from->prev = to->prev;
-        if (to->prev) to->prev->next = from;
-        to->prev = from;
-        if (to == head) head = from;
-    }
-
-    if (isCircular && head && tail) {
-        tail->next = head;
-        head->prev = tail;
-    }
+void Playlist::repeatMode(bool enabled) {
+    repeat = enabled;
 }
 
-Song* Playlist::search(QString title) {
-    Song* temp = head;
-    int count = 0;
-    while (temp && count < countSongs()) {
-        if (temp->title.compare(title, Qt::CaseInsensitive) == 0) {
-            return temp;
+Song* Playlist::search(const QString &title) {
+    for (Song* song : songs) {
+        if (song->title.compare(title, Qt::CaseInsensitive) == 0) {
+            return song;
         }
-        temp = temp->next;
-        count++;
     }
     return nullptr;
 }
 
-QVector<Song*> Playlist::getAllSongs() const {
-    QVector<Song*> songs;
-    Song* temp = head;
-    int count = 0;
-    while (temp && count < countSongs()) {
-        songs.append(temp);
-        temp = temp->next;
-        count++;
-    }
-    return songs;
+void Playlist::moveSong(int from, int to) {
+    if (from < 0 || from >= songs.size() || to < 0 || to >= songs.size()) return;
+    Song* song = songs.takeAt(from);
+    songs.insert(to, song);
 }
 
-int Playlist::countSongs() const {
-    int count = 0;
-    Song* temp = head;
-    if (!temp) return 0;
-
-    do {
-        count++;
-        temp = temp->next;
-    } while (temp && temp != head);
-
-    return count;
-}
-
-Song* Playlist::getSongAt(int index) const {
-    int i = 0;
-    Song* temp = head;
-    while (temp && i < index) {
-        temp = temp->next;
-        i++;
-    }
-    return temp;
-}
-
-Song* Playlist::getCurrent() const {
-    return current;
+Song* Playlist::currentSong() {
+    if (songs.isEmpty()) return nullptr;
+    int index = isShuffle ? shuffledOrder[currentIndex] : currentIndex;
+    return songs[index];
 }
 
 void Playlist::next() {
-    if (!current) return;
-    current = current->next ? current->next : (isCircular ? head : nullptr);
+    if (songs.isEmpty()) return;
+
+    if (isShuffle) {
+        currentIndex++;
+        if (currentIndex >= shuffledOrder.size()) {
+            if (repeat) {
+                shuffle(); // reshuffle and restart
+            } else {
+                currentIndex = shuffledOrder.size() - 1; // stay at last
+            }
+        }
+    } else {
+        currentIndex++;
+        if (currentIndex >= songs.size()) {
+            if (repeat) {
+                currentIndex = 0;
+            } else {
+                currentIndex = songs.size() - 1;
+            }
+        }
+    }
+}
+
+QVector<Song*> Playlist::getAllSongs() {
+    return songs;
+}
+
+bool Playlist::isShuffleMode() const {
+    return isShuffle;
+}
+
+QVector<int> Playlist::getShuffledOrder() const {
+    return shuffledOrder;
 }

@@ -3,33 +3,36 @@
 
 #include <QString>
 #include <QVector>
-#include "song.h"
+
+struct Song {
+    QString title;
+    QString artist;
+};
 
 class Playlist {
 public:
     Playlist();
-    ~Playlist();
 
-    void addSong(QString title, QString artist);
+    void addSong(const QString &title, const QString &artist);
     void removeCurrentSong();
-    void repeatMode(bool enable);
     void shuffle();
-    void moveSong(int fromIndex, int toIndex);
-    Song* search(QString title);
-    QVector<Song*> getAllSongs() const;
-    int countSongs() const;
+    void repeatMode(bool enabled);
+    Song* search(const QString &title);
+    void moveSong(int from, int to);
 
-    Song* getCurrent() const;  // Accès à la chanson en cours
-    void next();               // Avancer à la chanson suivante
+    Song* currentSong();
+    void next();
+
+    QVector<Song*> getAllSongs();
+    bool isShuffleMode() const;
+    QVector<int> getShuffledOrder() const;
 
 private:
-    Song* head;
-    Song* tail;
-    Song* current;
-    bool isCircular;
-
-    void clear();
-    Song* getSongAt(int index) const;
+    QVector<Song*> songs;
+    QVector<int> shuffledOrder;
+    int currentIndex;
+    bool repeat;
+    bool isShuffle;
 };
 
 #endif // PLAYLIST_H
